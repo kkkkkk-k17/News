@@ -19,18 +19,13 @@ class News {
 
 class SecondRouteState extends State<SecondRoute> {
   List dataList = [];
-  // List secondList = [];
-
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     setState(() {
       dataList = Provider.of(context);
-      // secondList = Provider.of<List>(context);
-
     });
-    // print(secondList);
   }
 
   @override
