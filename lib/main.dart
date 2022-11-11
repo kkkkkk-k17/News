@@ -1,36 +1,53 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:three_pam/news.dart';
-// import 'package:percent_indicator/percent_indicator.dart';
 
 void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Flutter Demo',
-      home: MyHomePage(
-        title: '',
-      ),
-    );
-  }
+  runApp(MultiProvider(
+      providers: [
+        Provider(
+          create: (context) => dataList,
+        ),
+      ],
+      child: const MaterialApp(
+        title: 'Flutter Demo',
+        home: MyHomePage(),
+      )));
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+class News {
+  String cover;
+  String title;
+
+  News({required this.cover, required this.title});
+}
+
+List dataList = [];
+
 class _MyHomePageState extends State<MyHomePage> {
+  Future<void> readJson() async {
+    final String response = await rootBundle.loadString('assets/news.json');
+    final data = await json.decode(response);
+    setState(() {
+      dataList = [data["featured"], data["news"]];
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    readJson();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +64,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SecondRoute()),
+                    MaterialPageRoute(
+                        builder: (context) => const SecondRoute()),
                   );
                 },
                 style: ButtonStyle(

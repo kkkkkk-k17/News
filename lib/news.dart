@@ -1,9 +1,7 @@
-import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class SecondRoute extends StatefulWidget {
   const SecondRoute({Key? key}) : super(key: key);
@@ -12,23 +10,27 @@ class SecondRoute extends StatefulWidget {
   State<SecondRoute> createState() => SecondRouteState();
 }
 
-class SecondRouteState extends State<SecondRoute> {
-  List firstList = [];
-  List secondList = [];
+class News {
+  String cover;
+  String title;
 
-  Future<void> readJson() async {
-    final String response = await rootBundle.loadString('assets/news.json');
-    final data = await json.decode(response);
-    setState(() {
-      firstList = data["featured"];
-      secondList = data["news"];
-    });
-  }
+  News({required this.cover, required this.title});
+}
+
+class SecondRouteState extends State<SecondRoute> {
+  List dataList = [];
+  // List secondList = [];
+
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    readJson();
+    setState(() {
+      dataList = Provider.of(context);
+      // secondList = Provider.of<List>(context);
+
+    });
+    // print(secondList);
   }
 
   @override
@@ -63,10 +65,10 @@ class SecondRouteState extends State<SecondRoute> {
             ),
             Container(
               height: 250,
-              child: firstList.isNotEmpty
+              child: dataList[0].isNotEmpty
                   ? Expanded(
                       child: ListView.builder(
-                        itemCount: firstList.length,
+                        itemCount: dataList[0].length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           return Container(
@@ -75,7 +77,7 @@ class SecondRouteState extends State<SecondRoute> {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(16),
                                   child: CachedNetworkImage(
-                                      imageUrl: firstList[index]["cover"],
+                                      imageUrl: dataList[0][index]["cover"],
                                       width: 310,
                                       height: 252,
                                       fit: BoxFit.cover),
@@ -90,7 +92,7 @@ class SecondRouteState extends State<SecondRoute> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: <Widget>[
                                       Text(
-                                        firstList[index]["title"],
+                                        dataList[0][index]["title"],
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                             fontSize: 20,
@@ -154,10 +156,10 @@ class SecondRouteState extends State<SecondRoute> {
               ),
             ),
             Container(
-              child: secondList.isNotEmpty
+              child: dataList[1].isNotEmpty
                   ? Expanded(
                       child: ListView.builder(
-                        itemCount: secondList.length,
+                        itemCount: dataList[1].length,
                         scrollDirection: Axis.vertical,
                         itemBuilder: (context, index) {
                           return Container(
@@ -179,7 +181,7 @@ class SecondRouteState extends State<SecondRoute> {
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(16),
                                     child: Image.network(
-                                        secondList[index]["cover"],
+                                        dataList[1][index]["cover"],
                                         width: 150,
                                         height: 156,
                                         fit: BoxFit.cover),
@@ -193,7 +195,7 @@ class SecondRouteState extends State<SecondRoute> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Text(
-                                                secondList[index]["title"],
+                                                dataList[1][index]["title"],
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 2,
                                                 style: const TextStyle(
@@ -214,7 +216,7 @@ class SecondRouteState extends State<SecondRoute> {
                                                           BorderRadius.circular(
                                                               50),
                                                       child: Image.network(
-                                                          secondList[index]
+                                                          dataList[1][index]
                                                                   ["portal"]
                                                               ["logo"],
                                                           width: 16,
@@ -226,7 +228,7 @@ class SecondRouteState extends State<SecondRoute> {
                                                     margin: const EdgeInsets
                                                         .fromLTRB(0, 0, 16, 0),
                                                     child: Text(
-                                                      secondList[index]
+                                                      dataList[1][index]
                                                           ["portal"]["title"],
                                                       style: const TextStyle(
                                                           fontWeight:
@@ -252,7 +254,7 @@ class SecondRouteState extends State<SecondRoute> {
                                                               ),
                                                     ),
                                                     child: Text(
-                                                      secondList[index]
+                                                      dataList[1][index]
                                                           ["category"],
                                                       style: const TextStyle(
                                                           fontWeight:
@@ -281,7 +283,7 @@ class SecondRouteState extends State<SecondRoute> {
                                                       child: Text(
                                                           NumberFormat.compact()
                                                               .format(
-                                                                  secondList[
+                                                                  dataList[1][
                                                                           index]
                                                                       ["likes"])
                                                               .toString(),
@@ -305,7 +307,7 @@ class SecondRouteState extends State<SecondRoute> {
                                                           0, 0, 40, 0),
                                                       child: Text(
                                                           NumberFormat.compact()
-                                                              .format(secondList[
+                                                              .format(dataList[1][
                                                                       index]
                                                                   ["comments"])
                                                               .toString(),
