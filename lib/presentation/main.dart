@@ -1,20 +1,12 @@
-import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:three_pam/news.dart';
+import 'package:three_pam/presentation/pages/news.dart';
 
 void main() {
-  runApp(MultiProvider(
-      providers: [
-        Provider(
-          create: (context) => dataList,
-        ),
-      ],
-      child: const MaterialApp(
-        title: 'Flutter Demo',
-        home: MyHomePage(),
-      )));
+  runApp(const MaterialApp(
+    title: 'Flutter Demo',
+    home: MyHomePage(),
+  ));
 }
 
 class MyHomePage extends StatefulWidget {
@@ -24,29 +16,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class News {
-  String cover;
-  String title;
-
-  News({required this.cover, required this.title});
-}
-
-List dataList = [];
-
 class _MyHomePageState extends State<MyHomePage> {
-  Future<void> readJson() async {
-    final String response = await rootBundle.loadString('assets/news.json');
-    final data = await json.decode(response);
-    setState(() {
-      dataList = [data["featured"], data["news"]];
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    readJson();
-  }
 
   @override
   Widget build(BuildContext context) {
