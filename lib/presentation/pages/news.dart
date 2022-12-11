@@ -2,7 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:three_pam/presentation/pages/post.dart';
+
 
 import '../../domain/Welcome.dart';
 
@@ -14,6 +16,7 @@ class SecondRoute extends StatefulWidget {
 }
 
 class SecondRouteState extends State<SecondRoute> {
+  final storage = LocalStorage('news');
   final baseUrl = 'https://news-app-api.k8s.devebs.net/articles';
   int page = 1;
 
@@ -26,6 +29,11 @@ class SecondRouteState extends State<SecondRoute> {
 
   Welcomes posts = Welcomes(welcomes: []);
   Welcomes features = Welcomes(welcomes: []);
+
+  saveToStorage() {
+    storage.setItem('posts', posts.welcomes);
+  }
+
 
   void loadMore() async {
     if (hasNextPage == true &&
@@ -79,6 +87,7 @@ class SecondRouteState extends State<SecondRoute> {
       setState(() {
         posts = test;
       });
+      saveToStorage();
     } catch (err) {
       print(err);
       print('Something went wrong');
